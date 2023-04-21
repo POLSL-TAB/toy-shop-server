@@ -36,6 +36,14 @@ public class CartService {
             () -> saveNewCartItem(user, cartItemDto));
   }
 
+  public void deleteCartItem(String userEmail, Long id) {
+    User user = userService.getByEmail(userEmail)
+        .orElseThrow(() -> new UsernameNotFoundException(userEmail + " user not found"));
+    Product product = productService.getById(id)
+        .orElseThrow(() -> new IllegalArgumentException(id + " product not found"));
+    cartRepository.deleteByUserAndProduct(user, product);
+  }
+
   private void updateCartItemQuantity(CartItem cartItem, CartItemDto cartItemDto) {
     cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
     cartRepository.save(cartItem);

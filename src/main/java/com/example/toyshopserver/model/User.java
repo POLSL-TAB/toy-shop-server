@@ -31,10 +31,14 @@ public class User {
 
   private String password;
 
+  private String name;
+
+  private String surname;
+
   @OneToOne(mappedBy = "user")
   private Address address;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<CartItem> cartItems;
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

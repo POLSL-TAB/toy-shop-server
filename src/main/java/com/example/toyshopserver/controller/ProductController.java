@@ -1,6 +1,6 @@
 package com.example.toyshopserver.controller;
 
-import com.example.toyshopserver.model.Product;
+import com.example.toyshopserver.dto.ProductDto;
 import com.example.toyshopserver.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class ProductController {
   private final ProductService productService;
 
   @GetMapping("/all")
-  public List<Product> getProducts() {
+  public List<ProductDto> getProducts() {
     return productService.getAll();
   }
 }
