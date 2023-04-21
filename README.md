@@ -37,7 +37,7 @@ koszyk (USER):
 
 zamówienia (USER)
     GET /api/order/all - pobranie wszystkich zamówień użytkownika
-    GET /api/order/create - utworzenie zamówienia na podstawie produktów w koszyku
+    PUT /api/order/create - utworzenie zamówienia na podstawie produktów w koszyku
 
 produkty (ALL)
     GET /api/products/all - pobranie wszystkich produktów
