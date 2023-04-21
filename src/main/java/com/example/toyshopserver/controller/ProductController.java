@@ -3,9 +3,11 @@ package com.example.toyshopserver.controller;
 import com.example.toyshopserver.dto.ProductDto;
 import com.example.toyshopserver.service.ProductService;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,5 +20,10 @@ public class ProductController {
   @GetMapping("/all")
   public List<ProductDto> getProducts() {
     return productService.getAll();
+  }
+
+  @GetMapping("/get")
+  public Optional<ProductDto> getProduct(@RequestParam Long id) {
+    return productService.getDtoById(id);
   }
 }

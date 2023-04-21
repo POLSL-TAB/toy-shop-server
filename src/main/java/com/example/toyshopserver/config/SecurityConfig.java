@@ -35,12 +35,12 @@ public class SecurityConfig {
         .cors().disable()
         .headers().frameOptions().disable()
         .and()
-        .authorizeHttpRequests()
-        .requestMatchers("/api/products/**").permitAll()
-        .and()
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-            .requestMatchers("/api/cart/**").hasAnyRole("ADMIN", "STAFF", "USER"))
+            .requestMatchers("/api/staff/**").hasAnyRole("ADMIN", "STAFF")
+            .requestMatchers("/api/cart/**").hasAnyRole("ADMIN", "STAFF", "USER")
+            .requestMatchers("/api/order/**").hasAnyRole("ADMIN", "STAFF", "USER")
+            .anyRequest().permitAll())
         .httpBasic();
 
     return http.build();
@@ -48,6 +48,6 @@ public class SecurityConfig {
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web.ignoring().requestMatchers("/api/auth/**", "/api/products/all");
+    return web -> web.ignoring().requestMatchers("/api/auth/**", "/api/products/**");
   }
 }

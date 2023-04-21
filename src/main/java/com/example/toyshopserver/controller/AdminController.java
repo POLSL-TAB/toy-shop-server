@@ -26,19 +26,16 @@ public class AdminController {
     return userService.getAll();
   }
 
-  //ex. http://localhost:8080/api/admin/users/get?email=example@user
   @GetMapping("/users/get")
   public Optional<UserDto> getByEmail(@RequestParam String email) {
     return userService.getDtoByEmail(email);
   }
 
-  //ex. http://localhost:8080/api/admin/users/role?email=example@user
   @GetMapping("/users/role")
   public List<String> getRole(@RequestParam String email) {
     return userService.getUserRoles(email);
   }
 
-  //ex. http://localhost:8080/api/admin/users/role?email=example@user&roles=USER,ADMIN
   @PostMapping("/users/role")
   public ResponseEntity<String> modifyRoles(@RequestParam String email, @RequestParam List<String> roles) {
     return userService.setUserRoles(email, roles)
@@ -46,7 +43,6 @@ public class AdminController {
         .orElse(new ResponseEntity<>(HttpStatus.OK));
   }
 
-  //ex. http://localhost:8080/api/admin/users/delete?email=example@user
   @DeleteMapping("/users/delete")
   public ResponseEntity<String> deleteUserByEmail(@RequestParam String email) {
     boolean deleted = userService.deleteByEmail(email);

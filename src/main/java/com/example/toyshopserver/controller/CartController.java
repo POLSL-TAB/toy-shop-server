@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +28,16 @@ public class CartController {
   }
 
   @PostMapping("/add")
-  public ResponseEntity<Void> addCartItem(Principal principal, @RequestBody CartItemDto cartItemDto) {
-    cartService.addCartItem(principal.getName(), cartItemDto);
+  public ResponseEntity<String> addCartItem(Principal principal, @RequestBody CartItemDto cartItemDto) {
+    try {
+      cartService.addCartItem(principal.getName(), cartItemDto);
+    } catch (Exception e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @PostMapping("/delete")
+  @DeleteMapping("/delete")
   public ResponseEntity<Void> deletedCartItem(Principal principal, @RequestParam Long id) {
     cartService.deleteCartItem(principal.getName(), id);
     return new ResponseEntity<>(HttpStatus.OK);

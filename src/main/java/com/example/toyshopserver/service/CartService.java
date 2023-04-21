@@ -5,12 +5,14 @@ import com.example.toyshopserver.model.CartItem;
 import com.example.toyshopserver.model.Product;
 import com.example.toyshopserver.model.User;
 import com.example.toyshopserver.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CartService {
 
@@ -31,6 +33,11 @@ public class CartService {
         .orElseThrow(() -> new UsernameNotFoundException(userEmail + " user not found"));
     Product product = productService.getById(cartItemDto.productId())
         .orElseThrow(() -> new IllegalArgumentException(cartItemDto.productId() + " product not found"));
+
+    if (cartItemDto.quantity() > product.getStock()) {
+      throw new IllegalArgumentException("Not enough items in stock. Items in stock: " + product.getStock());
+    }
+
     cartRepository.findFirstByUserAndProduct(user, product)
         .ifPresentOrElse(ci -> updateCartItemQuantity(ci, cartItemDto),
             () -> saveNewCartItem(user, cartItemDto));
@@ -41,7 +48,7 @@ public class CartService {
         .orElseThrow(() -> new UsernameNotFoundException(userEmail + " user not found"));
     Product product = productService.getById(id)
         .orElseThrow(() -> new IllegalArgumentException(id + " product not found"));
-    cartRepository.deleteByUserAndProduct(user, product);
+    cartRepository.deleteAllByUserAndProduct(user, product);
   }
 
   private void updateCartItemQuantity(CartItem cartItem, CartItemDto cartItemDto) {
