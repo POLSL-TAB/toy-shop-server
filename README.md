@@ -15,7 +15,7 @@ rejestracja użytkownika:
 
 zarządzanie użytkownikami (ADMIN):
     GET /api/admin/users/all - pobranie wszystkich
-    GET /api/admin/users/get - pobranie jednego (nie wiem po co w sumie, ale dodałem)
+    GET /api/admin/users/get - pobranie jednego
         ex. /api/admin/users/get?email=example@user
     DELETE /api/admin/users/delete - usunięcie
         ex. /api/admin/users/delete?email=example@user
@@ -43,9 +43,12 @@ produkty (ALL)
     GET /api/products/all - pobranie wszystkich produktów
     GET /api/products/get - pobranie jednego
         ex. /api/products/get?id=1
+    GET /api/products/images/all - pobranie wszystkich obrazków
+    GET /api/products/images - pobranie obrazka dla jednego produktu
+        ex. /api/products/images?productId=1
 
 obsługa sklepu (STAFF)
-    POST /api/staff/products/add
+    PUT /api/staff/products/add - dodanie produktu
         body:
             {
                 "name":"prodTest",
@@ -53,7 +56,7 @@ obsługa sklepu (STAFF)
                 "price":"12.35",
                 "stock":2
             }
-    POST /api/staff/product/update (np. update stanu towaru)
+    POST /api/staff/product/update - aktualizacja produktu (np. update stanu towaru)
         body:
             {
                 "id":1,
@@ -62,5 +65,13 @@ obsługa sklepu (STAFF)
                 "price":"12.35",
                 "stock":50
             }
+    PUT api/staff/products/images/add - dodanie obrazka zakodowanego w base64
+        body:
+            {
+                "productId":1,
+                "pictureB64":""
+            }
+    DELETE api/staff/products/images/delete - usunięcie obrazka
+        ex. api/staff/products/images/delete?id=1
 
 </pre>

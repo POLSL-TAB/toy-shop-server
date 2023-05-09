@@ -1,5 +1,6 @@
 package com.example.toyshopserver.controller;
 
+import com.example.toyshopserver.dto.ImageDto;
 import com.example.toyshopserver.dto.ProductDto;
 import com.example.toyshopserver.service.ProductService;
 import java.util.List;
@@ -25,5 +26,15 @@ public class ProductController {
   @GetMapping("/get")
   public Optional<ProductDto> getProduct(@RequestParam Long id) {
     return productService.getDtoById(id);
+  }
+
+  @GetMapping("/images/all")
+  public List<ImageDto> getAllImages() {
+    return productService.getAllProductImages();
+  }
+
+  @GetMapping("/images")
+  public List<ImageDto> getProductImages(@RequestParam Long productId) {
+    return productService.getProductImages(productId);
   }
 }
