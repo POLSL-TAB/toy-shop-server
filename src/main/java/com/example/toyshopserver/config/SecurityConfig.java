@@ -42,7 +42,6 @@ public class SecurityConfig {
         .headers().frameOptions().disable()
         .and()
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(request -> HttpMethod.OPTIONS.matches(request.getMethod())).permitAll()
             .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
             .requestMatchers("/api/staff/**").hasAnyRole("ADMIN", "STAFF")
             .requestMatchers("/api/cart/**").hasAnyRole("ADMIN", "STAFF", "USER")
@@ -55,7 +54,9 @@ public class SecurityConfig {
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web.ignoring().requestMatchers("/api/auth/**", "/api/products/**");
+    return web -> web.ignoring().requestMatchers("/api/auth/**", "/api/products/**")
+        .and()
+        .ignoring().requestMatchers(request -> HttpMethod.OPTIONS.matches(request.getMethod()));
   }
 
   @Bean
