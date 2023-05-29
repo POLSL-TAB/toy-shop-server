@@ -1,12 +1,16 @@
 package com.example.toyshopserver.service;
 
+import com.example.toyshopserver.data.ComplaintStatus;
+import com.example.toyshopserver.dto.ComplaintDTO;
 import com.example.toyshopserver.dto.OrderDto;
 import com.example.toyshopserver.dto.OrderItemDto;
 import com.example.toyshopserver.model.CartItem;
+import com.example.toyshopserver.model.Complaint;
 import com.example.toyshopserver.model.Order;
 import com.example.toyshopserver.model.OrderItem;
 import com.example.toyshopserver.model.User;
 import com.example.toyshopserver.repository.CartRepository;
+import com.example.toyshopserver.repository.ComplaintRepository;
 import com.example.toyshopserver.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -23,6 +27,7 @@ public class OrderService {
 
   private final CartRepository cartRepository;
   private final OrderRepository orderRepository;
+  private final ComplaintRepository complaintRepository;
   private final UserService userService;
   private final ProductService productService;
 
@@ -60,6 +65,41 @@ public class OrderService {
         .toList();
   }
 
+  public List<ComplaintDTO> getAllComplaints() {
+    return complaintRepository.findAll().stream()
+        .map(this::mapComplaintToDto)
+        .toList();
+  }
+
+  public Optional<ComplaintDTO> getComplaintForOrder(Long orderId) {
+    return orderRepository.findById(orderId)
+        .map(complaintRepository::findByOrder)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(this::mapComplaintToDto);
+  }
+
+  public void createComplaint(ComplaintDTO complaintDto) {
+    Order order = orderRepository.findById(complaintDto.orderId())
+        .orElseThrow();
+    Complaint complaint = new Complaint();
+    complaint.setOrder(order);
+    LocalDateTime now = LocalDateTime.now();
+    complaint.setCreated(now);
+    complaint.setUpdated(now);
+    complaint.setStatus(ComplaintStatus.CREATED);
+    complaint.setReason(complaintDto.reason());
+    complaintRepository.save(complaint);
+  }
+
+  public void updateComplaint(ComplaintDTO complaintDto) {
+    Complaint complaint = complaintRepository.findById(complaintDto.id())
+        .orElseThrow(() -> new IllegalArgumentException("No complaint with id " + complaintDto.id() + " in database"));
+    complaint.setStatus(ComplaintStatus.fromName(complaintDto.status()));
+    complaint.setUpdated(LocalDateTime.now());
+    complaintRepository.save(complaint);
+  }
+
   private OrderItem createOrderItem(CartItem cartItem, Order order) {
     OrderItem orderItem = new OrderItem();
     orderItem.setOrder(order);
@@ -84,6 +124,17 @@ public class OrderService {
 
   private OrderItemDto mapOrderItemToDto(OrderItem orderItem) {
     return new OrderItemDto(orderItem.getProduct().getId(), orderItem.getQuantity());
+  }
+
+  private ComplaintDTO mapComplaintToDto(Complaint complaint) {
+    return new ComplaintDTO(
+        complaint.getId(),
+        complaint.getOrder().getId(),
+        complaint.getStatus().name(),
+        complaint.getReason(),
+        Optional.ofNullable(complaint.getCreated()).map(LocalDateTime::toString).orElse(null),
+        Optional.ofNullable(complaint.getUpdated()).map(LocalDateTime::toString).orElse(null)
+    );
   }
 
   private String toStringSafe(Object object) {

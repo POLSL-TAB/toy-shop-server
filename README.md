@@ -32,12 +32,20 @@ koszyk (USER):
                     "productId": 1,
                     "quantity": 7
             }
-    POST /api/cart/delete - usunięcie pozycji z koszyka
+    DELETE /api/cart/delete - usunięcie pozycji z koszyka
         ex. /api/cart/delete?id=1
 
 zamówienia (USER)
     GET /api/order/all - pobranie wszystkich zamówień użytkownika
     PUT /api/order/create - utworzenie zamówienia na podstawie produktów w koszyku
+    GET /api/order/complaint/get - pobranie reklamacji do zamówienia
+        ex. /api/order/complaint/get?orderId=1
+    PUT /api/order/complaint/create - utworzenie reklamacji do zakupu
+        body:
+            {
+                    "orderId": 1,
+                    "reason": "jakiś powód reklamacji"
+            }
 
 produkty (ALL)
     GET /api/products/all - pobranie wszystkich produktów
@@ -73,5 +81,13 @@ obsługa sklepu (STAFF)
             }
     DELETE api/staff/products/images/delete - usunięcie obrazka
         ex. api/staff/products/images/delete?id=1
+    GET /api/staff/complaints/all - pobranie wszystkich reklamacji
+    POST /api/staff/complaints/update - aktualizacja (stanu) reklamacji (do rozbudowania ewentualnie)
+        body:
+            {
+                "id":1,
+                "status":"  CREATED/SENT_TO_MANUFACTURER/REJECTED_BY_SELLER/
+                            REJECTED_BY_MANUFACTURER/WAITING_FOR_DELIVERY/COMPLETED"
+            }
 
 </pre>
