@@ -46,4 +46,6 @@ public class Order {
 
   @OneToOne(mappedBy = "order")
   private Complaint complaint;
+
+  private boolean returned;
 }

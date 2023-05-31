@@ -82,6 +82,8 @@ public class OrderService {
   public void createComplaint(ComplaintDTO complaintDto) {
     Order order = orderRepository.findById(complaintDto.orderId())
         .orElseThrow();
+    order.setReturned(true);
+    orderRepository.save(order);
     Complaint complaint = new Complaint();
     complaint.setOrder(order);
     LocalDateTime now = LocalDateTime.now();
@@ -118,7 +120,8 @@ public class OrderService {
         toStringSafe(order.getPaymentType()),
         order.getOrderItems().stream()
             .map(this::mapOrderItemToDto)
-            .toList()
+            .toList(),
+        order.isReturned()
     );
   }
 
