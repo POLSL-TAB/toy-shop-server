@@ -9,7 +9,8 @@ public record OrderDto(
     String created,
     String completed,
     String paymentType,
-    List<OrderItemDto> oderItems
+    List<OrderItemDto> oderItems,
+    boolean returned
 ) {
 
 }
